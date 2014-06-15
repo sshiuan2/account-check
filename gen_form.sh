@@ -1,67 +1,67 @@
 #!/bin/bash
 gen_files(){
-case $1 in
-"out")
-echo "merged.txt"
-;;
-*)
-echo "$1 not a core file."
-exit 2;
-;;
-esac
+	case $1 in
+		"out")
+		echo "merged.txt"
+		;;
+	*)
+		echo "$1 not a core file."
+		exit 2;
+	;;
+	esac
 }
 gen_head(){
-local f_out=$1
-cat >$f_out <<EOL
+	local f_out=$1
+		cat >$f_out <<EOL
 #email,facebook,twitter
 #status 1=found,0=notfound,empty=unknow
-EOL
+		EOL
 }
 gen_row(){
-local type=$1
-local mail=$2
-local status=$3
-if [ "$type" == "fb" ];then
-echo "$mail,$status,"
-elif [ "$type" == "twi" ];then
-echo "$mail,,$status"
-else
-echo "type error"
-exit 2;
-fi
+	local type=$1
+		local mail=$2
+		local status=$3
+		if [ "$type" == "fb" ];then
+			echo "$mail,$status,"
+				elif [ "$type" == "twi" ];then
+				echo "$mail,,$status"
+		else
+			echo "type error"
+				exit 2;
+	fi
 }
 append(){
-echo $1 >> $2
+	echo $1 >> $2
 }
 merge(){
-local type=$1
-local mail=$2
-local status=$3
-local f_out=$4
-if [ "$type" == "fb" ];then
-sed -i "s/^\($mail\),\([^,]*\),\([^,]*\)$/\1,$status,\3/" $f_out
-elif [ "$type" == "twi" ];then
-sed -i "s/^\($mail\),\([^,]*\),\([^,]*\)$/\1,\2,$status/" $f_out
-fi
+	local type=$1
+		local mail=$2
+		local status=$3
+		local f_out=$4
+		if [ "$type" == "fb" ];then
+			sed -i "s/^\($mail\),\([^,]*\),\([^,]*\)$/\1,$status,\3/" $f_out
+				elif [ "$type" == "twi" ];then
+				sed -i "s/^\($mail\),\([^,]*\),\([^,]*\)$/\1,\2,$status/" $f_out
+				fi
 }
 gen_dispatcher(){
-local d_in=$1
-local f_out=$2
-local status
+	local d_in=$1
+		local f_out=$2
+		local status
 
-for f in $d_in/*;do
-local fname=`basename $f`
-local type=${fname%%.*}
-local mail=""
-local sub=`echo $fname|sed -n "s/^$type.//p"`
-local status=${sub%%.*}
-if [ "$status" == "found" ];then
-status=1
-elif [ "$status" == "notfound" ];then
-status=0
-else
-status=""
-fi
+		for f in $d_in/*;do
+				local fname=`basename $f`
+				local type=${fname%%.*}
+				local mail=""
+				local sub=`echo $fname|sed -n "s/^$type.//p"`
+				local status=${sub%%.*}
+				if [ "$status" == "found" ];then
+				status=1
+				elif [ "$status" == "notfound" ];then
+				status=0
+				else
+				status=""
+				fi
 #~% echo "${FILE%%.*}"
 #example
 #~% echo "${FILE%.*}"
@@ -120,10 +120,10 @@ echo "usage: ${BASH_SOURCE[0]} $param1 $param2"
 echo "files in folder must have right filaname."
 echo "filename: type.status.txt"
 echo "types: fb, twi"
-echo "status: found, notfound"
-echo "example: fb.found.txt"
-;;
-*)
-gen_main $@
-;;
-esac
+		echo "status: found, notfound"
+		echo "example: fb.found.txt"
+		;;
+		*)
+		gen_main $@
+		;;
+		esac
